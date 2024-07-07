@@ -4,7 +4,6 @@ import gspread
 from google.oauth2.service_account import Credentials
 
 
-
 class GoogleSheets:
 
     def __init__(self, scopes, credentials_path, excel_key):
@@ -14,17 +13,17 @@ class GoogleSheets:
         self.excel = self.client.open_by_key(excel_key)
         self.working_sheet = self.excel.sheet1
 
+    def insert_row(self, values, index=1):
+        self.working_sheet.insert_row(values, index)
 
-    def insert_row(self):
-        pass
+    def update_cell(self, row, col, value):
+        self.working_sheet.update_cell(row, col, value)
 
-    def modify_cell(self):
-        pass
+    def add_worksheet(self, title, rows=2100, cols=26):
+        new_worksheet = self.excel.add_worksheet(title=title, rows=rows, cols=cols)
 
     def get_values(self):
         return self.working_sheet.get_all_records()
-
-
 
 
 # scopes = [
@@ -40,7 +39,6 @@ class GoogleSheets:
 # print(values)
 
 if __name__ == '__main__':
-
     with open("config.json", "r") as f:
         gsheets_config = json.loads(f.read())
 
@@ -51,7 +49,11 @@ if __name__ == '__main__':
     employees = excel.get_values()
     print(employees)
 
+    excel.insert_row(["Ana Andrei",
+                       "andrei.ana@gmail.com",
+                       "HR", "Diana Radulescu",
+                       "radulescu.diana95@gmail.com",
+                       "08/07/2025"],index=4)
 
-
-
-
+    excel.update_cell(2, 3, "marketing")
+    excel.add_worksheet("New Data")
