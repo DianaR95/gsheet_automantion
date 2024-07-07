@@ -1,11 +1,18 @@
 import datetime
 import json
+import logging
 
 from gsheets import GoogleSheets
 from mail import Mail
 
 # o sa avem gsheets cu nume, mail, data expirare parola
 # vom face automatizare care trimite mailuri angajatilor carora urmeaza sa le expire parola
+
+logging.basicConfig(filename='log_file_name.log',
+                    level=logging.INFO,
+                    format='[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s',
+                    datefmt='%H:%M:%S')
+logger = logging.getLogger(__name__)
 
 
 def read_config(path: str = "config.json") -> dict:
@@ -27,7 +34,7 @@ def run(employees: list, mail: Mail, config: dict):
         expiration_date = datetime.datetime.strptime(employee['Password Expiration Date'], "%d/%m/%Y")
         delta_days = (expiration_date - today).days
         if 3 >= delta_days >= 0:
-            print(f"User {employee['Name']} needs to reset his password. Mail will be sent")
+            logger.info(f"User {employee['Name']} needs to reset his password. Mail will be sent")
             html_template = read_html_template()
             html_template = html_template.replace("[Recipient's Name]", employee['Name'])
             if delta_days < 1:
@@ -40,9 +47,7 @@ def run(employees: list, mail: Mail, config: dict):
             mail.send_email_using_mime(employee['Mail'], "Password about to expire", html_template)
 
         else:
-            print(f"User {employee['Name']} doesn't need to reset his password.")
-
-
+            logger.info(f"User {employee['Name']} doesn't need to reset his password.")
 
 
 if __name__ == '__main__':
@@ -51,5 +56,3 @@ if __name__ == '__main__':
     excel = GoogleSheets(config['scopes'], "credentials.json", config['excel_id'])
     employees = excel.get_values()
     run(employees, mail, config)
-
-
