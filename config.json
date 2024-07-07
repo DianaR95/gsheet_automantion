@@ -1,0 +1,10 @@
+{
+  "excel_id": "15SAYwfKjG0tpI1Cl9nkU7bRirVgfamJZPTrMwk2_xic",
+  "scopes": ["https://www.googleapis.com/auth/spreadsheets"],
+  "sender_email": "radulescu.diana95@gmail.com",
+  "color_codes": {
+    "green": "#4CAF50",
+    "red": "#D72210",
+    "yellow": "#F6D71F"
+  }
+}
